@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "esModuleInterop": true,
+        "lib": [
+            "ESNext"
+        ],
+        "module": "CommonJS",
+        "moduleResolution": "node",
+        // "noUnusedLocals": true,
+        // "noUnusedParameters": true,
+        "outDir": ".build",
+        "preserveConstEnums": true,
+        "resolveJsonModule": true,
+        "rootDir": "./",
+        "sourceMap": true,
+        "strictNullChecks": true,
+        "target": "ES2019"
+    },
+}
