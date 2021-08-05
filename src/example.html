@@ -1,0 +1,42 @@
+
+<h3>Generating the World !</h3>
+<h4>— Learn about Python Generator</h4>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*rCBtWiC1cqVUxAsUs26mcg.jpeg"><figcaption>Photo by <a href="https://unsplash.com/@kelvinyup?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Kelvin Yup</a> on <a href="https://unsplash.com/s/photos/cake?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></figcaption></figure><p><em>If you are like me who have a few months experience of Python, then you might be in the same position as me — know something about Python, but not enough. So I spent sometime to gather bits and pieces of scattered knowledge to dig deeper into Python. In this blog, the piece will be generators.</em></p>
+<p>But first, remember about the Iterator we mentioned <a href="https://elfi-y.medium.com/python-iterables-and-iterati-754010885f4">earlier</a>? Generator closely links with the iterator concept:</p>
+<p><strong>generator</strong></p>
+<blockquote>A function which<strong> returns a generator iterator.</strong> It looks like a normal function except that it contains <a href="https://docs.python.org/3/reference/simple_stmts.html#yield"><strong>yield</strong></a> expressions for producing a series of values usable in a for-loop or that can be retrieved one at a time with the next() function.</blockquote>
+<blockquote>Usually refers to a generator function, but may refer to a <em>generator iterator</em> in some contexts. In cases where the intended meaning isn’t clear, using the full terms avoids ambiguity.</blockquote>
+<p><strong>generator iterator</strong></p>
+<blockquote>An object created by a generator function.</blockquote>
+<blockquote>Each yield temporarily<strong> suspends processing, remembering the location execution state</strong>. When the <em>generator iterator</em> resumes, it picks up where it left off (in contrast to functions which start fresh on every invocation).</blockquote>
+<p><strong>generator expression</strong></p>
+<blockquote>An expression that<strong> returns an iterator</strong>. It looks like a normal expression followed by a for clause defining a loop variable, range, and an optional if clause. The combined expression generates values for an enclosing function:</blockquote>
+<p><strong>Generators at a glance</strong></p>
+<p>So first, Generators. Why they are in use? Well, just like the same terminology in JavaScript, Generators are implemented so that we don’t need to write counterintuitive Iterator protocol everytime with __iter__ and __next__ .</p>
+<p>The difference between a Generator and a normal functions are mainly in that:</p>
+<ul>
+<li>It contains one or more yield statements that can remember the state and in pause, will return the control to the outer scope;</li>
+<li>It complies with the iteration protocol naturally so no manual implementation of __iter__() and __next__() is required;</li>
+</ul>
+<p>Let’s see below how a generator function range_3_gen_func returns a generator iterator:</p>
+<pre>&gt;&gt;&gt; def range_3_gen_func():<br>...     <strong>x = 0</strong><br>...     while x &lt; 3:<br>...       print(f"{x} is yielded")<br>...       <strong>yield</strong> x<br>...       x = x + 1</pre>
+<pre>... result = <strong>range_3_gen_func</strong>()<br>... <strong>next</strong>(result)<br>... next(result)<br>... next(result)<br>... next(result)</pre>
+<pre>==========================<br>0 is yielded<br>1 is yielded<br>2 is yielded<br>Traceback (most recent call last):<br>  File "main.py", line 13, in &lt;module&gt;<br>    next(result)<br>StopIteration</pre>
+<p>You can see from above that the local variable x is remembered throughout the lifetime. Also, note that the generator object can be iterated only once. To start the cycle again we need to invoke range_3_gen_func and assign the returned new generator to another variable.</p>
+<p><strong>Generator expressions</strong></p>
+<p>Sometimes you want to have a more lightweight version of generator just like list comprehension to list. This is where Generator Expression comes in(short form: “listcomps” and “genexps”).</p>
+<p>In short, Generator expressions are like list comprehensions except it creates anonymous generator functions. (The syntax is only different in the () vs. [] )</p>
+<p>Also noted that the list comprehension returns the entire list while the generator expression <strong>return one element at a time</strong>, and more <strong>memory efficient</strong> as a result.</p>
+<pre>&gt;&gt;&gt; line_list = ['  line 1\n', 'line 2\n','line 3\n' ]<br>&gt;&gt;&gt; stripped_iter = (line.strip() for line in line_list)<br>&gt;&gt;&gt; stripped_list = [line.strip() for line in line_list]<br>&gt;&gt;&gt; print(stripped_list)</pre>
+<pre>['line 1', 'line 2', 'line 3']</pre>
+<pre>&gt;&gt;&gt; print(stripped_iter)</pre>
+<pre>&lt;generator object &lt;genexpr&gt; at 0x10c502ed0&gt;</pre>
+<pre>&gt;&gt;&gt; for _ in stripped_iter:<br>...   print(_)<br>...<br>line 1<br>line 2<br>line 3</pre>
+<p>You can see that stripped_iter returns an iterator that computes the values as necessary, not needing to materialise all the values at once, and lazy evaluates the return.</p>
+<p>Just like list comprehension, we can add logic to the genexp:</p>
+<pre>( expression <strong>for</strong> expr <strong>in</strong> sequence1<br><strong>if</strong> condition1<br><strong>for</strong> expr2 <strong>in</strong> sequence2<br><strong>if</strong> condition2<br><strong>for</strong> expr3 <strong>in</strong> sequence3 ...<br><strong>if</strong> condition3<br><strong>for</strong> exprN <strong>in</strong> sequenceN<br><strong>if</strong> conditionN )</pre>
+<p>Also, when used as function argument, the outside parenthesis can be ignored:</p>
+<pre>obj_total = sum(obj.count <strong>for</strong> obj <strong>in</strong> list_all_objects())</pre>
+<p>That’s so much of it!</p>
+<p>Happy Reading!</p>
+<img src="https://medium.com/_/stat?event=post.clientViewed&amp;referrerSource=full_rss&amp;postId=2a44314b6966" width="1" height="1" alt="">
