@@ -48,6 +48,7 @@ export class MediumController {
 
   private getPostsFromLastWeek = async (): Promise<MediumPost[]> => {
     await this.init();
+
     if (this.result.items.length > 0) {
       return this.result.items.filter((blog: MediumPost) => {
         // filter out blogs posted more than a week ago
@@ -67,17 +68,18 @@ export class MediumController {
     return lastWeek;
   };
 
-  public extractPostItems = async (): Promise<ContentfulBlogPost[]> => {
+  public extractPosts = async (): Promise<ContentfulBlogPost[]> => {
     await this.init();
-
     const blogs = await this.getPostsFromLastWeek();
     if (blogs.length === 0) {
       // TODO: TERMINATING the service, no blog to transform
+      //// process.exit();
       return [];
     }
     const transformedBlogs = await Promise.all(
       blogs.map(async (blog) => await transformPost(blog))
     );
+
     return transformedBlogs;
   };
 
@@ -87,8 +89,9 @@ export class MediumController {
 const doTheWork = async () => {
   try {
     const mediumController = new MediumController();
-    const transformedBlogs = await mediumController.extractPostItems();
+    const transformedBlogs = await mediumController.extractPosts();
     const contentfulController = new ContentfulController();
+    //TODO: resolve rate limit
     // transformedBlogs.map(
     //   async (blog) => await contentfulController.createBlogEntry(blog)
     // );
