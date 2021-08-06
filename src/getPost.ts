@@ -2,40 +2,12 @@ import fetch from 'node-fetch';
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
+import { extractPost } from './utils';
+import { ContentfulController } from './publishPost';
 
 const BASE_URL =
   'https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@';
 const MEDIUM_URL = BASE_URL + process.env.MEDIUM_USERNAME;
-
-interface Post {
-  title: string;
-  pubDate: string; // "2021-07-21 20:57:45"
-  link: string;
-  guid: string;
-  author: 'E.Y';
-  thumbnail: string;
-  description: string; //html
-  enclosure?: any;
-  categories?: string[];
-}
-
-const extractPost = (post: Post) => {
-  return {
-    title: post.title,
-    publishDate: post.pubDate,
-    link: post.link,
-    tags: post.categories,
-  };
-};
-
-const extractImg = (post: Post) => {
-  return {
-    title: post.title,
-    publishDate: post.pubDate,
-    link: post.link,
-    tags: post.categories,
-  };
-};
 
 const getUserData = async () => {
   try {
@@ -48,13 +20,18 @@ const getUserData = async () => {
     // fs.writeFile('/example.html', result.items[0].description, (error) => {
     //   /* handle error */
     // });
-    fs.writeFileSync(
-      path.join(__dirname, 'example.html'),
-      result.items[0].description
-    );
+    // fs.writeFileSync(
+    //   path.join(__dirname, 'example.html'),
+    //   result.items[0].description
+    // );
 
     console.log('RESULT', statusCode);
     console.log('RESULT', result.items.length);
+    const blog = await extractPost(result.items[0]);
+    console.log('BLOG', blog);
+
+    const contentfulController = new ContentfulController();
+    contentfulController.createBlogEntry(blog);
   } catch (error) {
     console.error(error);
     return error;
