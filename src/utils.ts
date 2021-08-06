@@ -39,7 +39,7 @@ const getSlugFromTitle = (title: string): string => {
 //   });
 // };
 
-export const extractPost = async (
+export const transformPost = async (
   post: MediumPost
 ): Promise<ContentfulBlogPost> => {
   const body = await convertMarkdownToRichtext(

@@ -8,6 +8,7 @@ export interface MediumPost {
   author?: 'E.Y';
   thumbnail: string;
   description: string; //html
+  content?: string;
   enclosure?: any;
   categories?: string[];
 }
