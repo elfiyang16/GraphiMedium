@@ -1,8 +1,8 @@
 import { MediumPost, ContentfulBlogPost } from './interface';
 import TurndownService from 'turndown';
 import { richTextFromMarkdown } from '@contentful/rich-text-from-markdown';
-
-// const sharp = require('sharp');
+import fetch from 'node-fetch';
+import sharp from 'sharp';
 
 const convertHtmlToMarkdown = (content: string) => {
   const turndownService = new TurndownService();
@@ -31,13 +31,47 @@ const getSlugFromTitle = (title: string): string => {
   return title;
 };
 
-// const imgToDataURL = async (url) => {
-//   return await fetch(url, {
-//     method: 'GET',
-//   }).then(({ data }) => {
-//     return sharp(data).resize(198, 110).png().toBuffer();
-//   });
-// };
+const getBufferFromUrl = async (url: string): Promise<Buffer | undefined> => {
+  try {
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    return buffer;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const convertBufferToArrayBuffer = (buffer: Buffer): ArrayBuffer => {
+  // https://gist.github.com/miguelmota/5b06ae5698877322d0ca
+  //  var ab = new ArrayBuffer(buffer.length);
+  //  var view = new Uint8Array(ab);
+  //  for (var i = 0; i < buffer.length; ++i) {
+  //    view[i] = buffer[i];
+  //  }
+  //  return ab;
+  return buffer.buffer.slice(
+    buffer.byteOffset,
+    buffer.byteOffset + buffer.byteLength
+  );
+};
+
+export const formatImage = async (url: string) => {
+  const imageBuffer = await getBufferFromUrl(url);
+  console.log('IMAGEBuffer', imageBuffer);
+
+  const buffer = await sharp(imageBuffer)
+    .raw()
+    .resize({ width: 700, height: 393, fit: sharp.fit.cover })
+    .jpeg()
+    .toBuffer({ resolveWithObject: false });
+  console.log('BUFFER', buffer);
+
+  const arrayBuffer = convertBufferToArrayBuffer(buffer);
+  console.log('ARRAYBUFFER', arrayBuffer);
+
+  return arrayBuffer;
+};
 
 export const transformPost = async (
   post: MediumPost

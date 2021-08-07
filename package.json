@@ -18,12 +18,14 @@
   "homepage": "https://github.com/elfiyang16/medium-request-sdk#readme",
   "dependencies": {
     "@contentful/rich-text-from-markdown": "^15.1.0",
+    "@types/sharp": "^0.28.5",
     "aws-sdk": "^2.538.0",
     "contentful-management": "^7.31.0",
     "dotenv": "^10.0.0",
     "graphql": "^15.5.1",
     "graphql-tag": "^2.12.5",
     "node-fetch": "^2.6.1",
+    "sharp": "0.28.0",
     "turndown": "^7.1.1"
   },
   "devDependencies": {

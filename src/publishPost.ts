@@ -2,7 +2,7 @@ import { createClient } from 'contentful-management';
 import { ClientAPI } from 'contentful-management/dist/typings/create-contentful-api';
 import { Environment } from 'contentful-management/dist/typings/entities/environment';
 import { ContentfulBlogPost } from './interface';
-
+import { formatImage } from './utils';
 export class ContentfulController {
   accessToken: string;
   client: ClientAPI;
@@ -60,8 +60,15 @@ export class ContentfulController {
   }) => {
     await this.init();
     try {
-      console.log('creating asset...');
+      console.log('Image Processing...');
+      console.log('creating image arrayBuffer...');
 
+      const imageArrayBuffer = await formatImage(link);
+      console.log('uploading asset...');
+      const imageUpload = await this.environment.createUpload({
+        file: imageArrayBuffer,
+      });
+      console.log('creating asset...');
       const imageAsset = await this.environment
         .createAsset({
           fields: {
@@ -72,7 +79,14 @@ export class ContentfulController {
               'en-US': {
                 fileName: `${title}.jpeg`,
                 contentType: 'image/jpeg',
-                upload: link,
+                // upload: link,
+                uploadFrom: {
+                  sys: {
+                    type: 'Link',
+                    linkType: 'Upload',
+                    id: imageUpload.sys.id,
+                  },
+                },
               },
             },
           },
@@ -88,7 +102,6 @@ export class ContentfulController {
         .then((asset) => {
           return asset;
         });
-      console.log('IMAGE', imageAsset);
 
       return imageAsset;
     } catch (err) {
