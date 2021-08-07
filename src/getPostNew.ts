@@ -69,15 +69,18 @@ export class MediumController {
 
   public extractPosts = async (): Promise<ContentfulBlogPost[]> => {
     await this.init();
-    const blogs = await this.getPostsFromLastWeek();
-    if (blogs.length === 0) {
-      // TODO: TERMINATING the service, no blog to transform
-      //// process.exit();
-      return [];
-    }
-    const transformedBlogs = await Promise.all(
-      blogs.map(async (blog) => await transformPost(blog))
-    );
+    // const blogs = await this.getPostsFromLastWeek();
+    // if (blogs.length === 0) {
+    //   // TODO: TERMINATING the service, no blog to transform
+    //   //// process.exit();
+    //   return [];
+    // }
+    // const transformedBlogs = await Promise.all(
+    //   blogs.map(async (blog) => await transformPost(blog))
+    // );
+    const transformedBlogs = (await Promise.all(
+      this.result.items.map(async (blog) => await transformPost(blog))
+    )) as ContentfulBlogPost[];
 
     return transformedBlogs;
   };
