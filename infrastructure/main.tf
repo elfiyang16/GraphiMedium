@@ -82,8 +82,8 @@ locals {
 data "archive_file" "lambda_medium_contentful" {
   type = "zip"
 
-  source_dir  = "${path.module}/../dist"
-  output_path = "${path.module}/../dist/src.zip"
+  source_dir  = "${path.module}/../.dist"
+  output_path = "${path.module}/../.dist/src.zip"
 }
 
 resource "aws_s3_bucket_object" "lambda_medium_contentful" {
