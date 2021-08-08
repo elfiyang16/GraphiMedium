@@ -19,6 +19,11 @@ const doTheWork = async () => {
     return error;
   }
 };
-exports.handler = async () => {
+// exports.handler = async () => {
+//   await doTheWork();
+// };
+const handler = async () => {
   await doTheWork();
 };
+
+export { handler };
