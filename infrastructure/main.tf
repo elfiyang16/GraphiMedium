@@ -103,12 +103,14 @@ resource "aws_lambda_function" "lambda_medium_contentful" {
   runtime = "nodejs12.x"
   handler = "index.handler"
   #   timeout = 900
-  #   environment {
-  #        variables = {
-  #             ACCOUNT_ID = "${data.aws_caller_identity.current.account_id}",
-  #             AMI_MAX_AGE = "${var.ami_max_age}"
-  #        }
-  #    }
+  environment {
+    variables = {
+      #   ACCOUNT_ID  = "${data.aws_caller_identity.current.account_id}",
+      MEDIUM_USERNAME             = var.medium_username
+      CONTENTFUL_MANAGEMENT_TOKEN = var.contenful_management_token
+      CONTENTFUL_SPACE_ID         = var.contentful_space_id
+    }
+  }
 
   # source_code_hash attribute will change whenever 
   # you update the code contained in the archive, 

@@ -1,13 +1,17 @@
-# variable "domain_name" {
-#   type        = string
-#   description = "The domain name for the blog site"
-#   default     = "elfi-y"
-# }
+variable "medium_username" {
+  type        = string
+  description = "Medium user name to pull the blogs from"
+}
 
-# variable "bucket_name" {
-#   type        = string
-#   description = "The name of the bucket without the 3w prefix"
-# }
+variable "contenful_management_token" {
+  type        = string
+  description = "The contentful management token"
+}
+
+variable "contentful_space_id" {
+  type        = string
+  description = "The contentful space id"
+}
 
 # variable "common_tags" {
 #   type        = map(any)
