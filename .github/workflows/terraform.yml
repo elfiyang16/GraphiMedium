@@ -1,22 +1,22 @@
-name: Terraform Deployment
-on:
-  push:
-    branches: [master]
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# name: Terraform Deployment
+# on:
+#   push:
+#     branches: [master]
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '12'
+#     steps:
+#       - uses: actions/checkout@v2
+#       - uses: actions/setup-node@v2
+#         with:
+#           node-version: '12'
 
-      - run: npm install
-        name: Install dependencies
+#       - run: npm install
+#         name: Install dependencies
 
-      # - run: npm run test
-      #   name: Run test and lint
+#       # - run: npm run test
+#       #   name: Run test and lint
 
-      - name: Build Website
-        run: npm run build
+#       - name: Build Website
+#         run: npm run build
