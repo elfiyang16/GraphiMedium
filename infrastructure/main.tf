@@ -82,7 +82,7 @@ locals {
 data "archive_file" "lambda_medium_contentful" {
   type = "zip"
 
-  source_dir  = "${path.module}/../.dist"
+  source_dir  = "${path.module}/../.dist/src"
   output_path = "${path.module}/../.build/src.zip"
 }
 
