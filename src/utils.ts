@@ -8,7 +8,7 @@ const convertHtmlToMarkdown = (content: string) => {
   const turndownService = new TurndownService();
   turndownService.remove('img').remove('figcaption');
   const markdown = turndownService.turndown(content);
-  //   console.log('MARKETDOWN', markdown);
+  console.log('MARKETDOWN', markdown);
   return markdown as string;
 };
 

@@ -1,8 +1,5 @@
 import { MediumController } from './getPostNew';
-// import { MediumController } from './getPost';
-
 import { ContentfulController } from './publishPost';
-// import AWS from 'aws-sdk';
 
 const doTheWork = async () => {
   try {
@@ -19,6 +16,7 @@ const doTheWork = async () => {
     return error;
   }
 };
-exports.handler = async () => {
+
+(async () => {
   await doTheWork();
-};
+})();
