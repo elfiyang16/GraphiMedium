@@ -9,7 +9,7 @@
         "moduleResolution": "node",
         // "noUnusedLocals": true,
         // "noUnusedParameters": true,
-        "outDir": ".build",
+        "outDir": ".dist",
         "preserveConstEnums": true,
         "resolveJsonModule": true,
         "rootDir": "./",

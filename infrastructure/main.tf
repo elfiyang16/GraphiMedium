@@ -81,50 +81,48 @@ locals {
 
 data "archive_file" "lambda_medium_contentful" {
   type = "zip"
-#   source_dir  = "${path.module}/hello-world"
-#   output_path = "${path.module}/hello-world.zip"
-  source_dir  = "../src"
-  output_path = "../tmp/src.zip"
+
+  source_dir  = "${path.module}/../dist"
+  output_path = "${path.module}/../dist/src.zip"
 }
 
 resource "aws_s3_bucket_object" "lambda_medium_contentful" {
   bucket = aws_s3_bucket.lambda_bucket.id
   key    = "${local.service_name}.zip"
   source = data.archive_file.lambda_medium_contentful.output_path
-#   source code changed, the computed etag
+  #   source code changed, the computed etag
   etag = filemd5(data.archive_file.lambda_medium_contentful.output_path)
 }
 
 
 resource "aws_lambda_function" "lambda_medium_contentful" {
   function_name = local.service_name
-
-  s3_bucket = aws_s3_bucket.lambda_bucket.id
-  s3_key    = aws_s3_bucket_object.lambda_medium_contentful.key
+  s3_bucket     = aws_s3_bucket.lambda_bucket.id
+  s3_key        = aws_s3_bucket_object.lambda_medium_contentful.key
 
   runtime = "nodejs12.x"
   handler = "index.handler"
-#   timeout = 900
-#   environment {
-#        variables = {
-#             ACCOUNT_ID = "${data.aws_caller_identity.current.account_id}",
-#             AMI_MAX_AGE = "${var.ami_max_age}"
-#        }
-#    }
+  #   timeout = 900
+  #   environment {
+  #        variables = {
+  #             ACCOUNT_ID = "${data.aws_caller_identity.current.account_id}",
+  #             AMI_MAX_AGE = "${var.ami_max_age}"
+  #        }
+  #    }
 
-# source_code_hash attribute will change whenever 
-# you update the code contained in the archive, 
-# which lets Lambda know that there is a new version of your code available.
+  # source_code_hash attribute will change whenever 
+  # you update the code contained in the archive, 
+  # which lets Lambda know that there is a new version of your code available.
   source_code_hash = data.archive_file.lambda_medium_contentful.output_base64sha256
-  role = aws_iam_role.lambda_exec.arn
+  role             = aws_iam_role.lambda_exec.arn
 
   # Make sure the role policy is attached before trying to use the role
   depends_on = [aws_iam_role_policy_attachment.lambda_policy]
 }
 
 resource "aws_cloudwatch_log_group" "lambda_medium_contentful" {
-    # /aws/lambda/<Function Name>
-  name = "/aws/lambda/${aws_lambda_function.lambda_medium_contentful.function_name}"
+  # /aws/lambda/<Function Name>
+  name              = "/aws/lambda/${aws_lambda_function.lambda_medium_contentful.function_name}"
   retention_in_days = 30
 }
 
