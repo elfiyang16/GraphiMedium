@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.handler = void 0;
 const getPostNew_1 = require("./getPostNew");
 // import { MediumController } from './getPost';
 const publishPost_1 = require("./publishPost");
@@ -20,7 +21,11 @@ const doTheWork = async () => {
         return error;
     }
 };
-exports.handler = async () => {
+// exports.handler = async () => {
+//   await doTheWork();
+// };
+const handler = async () => {
     await doTheWork();
 };
+exports.handler = handler;
 //# sourceMappingURL=index.js.map
