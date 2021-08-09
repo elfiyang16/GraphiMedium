@@ -115,7 +115,7 @@ resource "aws_s3_bucket_object" "lambda_medium_contentful_layer" {
   etag   = filemd5(data.archive_file.lambda_medium_contentful_layer.output_path)
   #   maybe don't need this:
   depends_on = [
-  "data.archive_file.lambda_medium_contentful_layer"]
+  data.archive_file.lambda_medium_contentful_layer]
 }
 
 
