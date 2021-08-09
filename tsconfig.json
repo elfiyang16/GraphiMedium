@@ -17,7 +17,7 @@
         "target": "ES2019",
         "resolveJsonModule": true,
     },
-    "include": [
-        "./package.json"
-    ]
+    // "include": [
+    //     "./package.json"
+    // ]
 }

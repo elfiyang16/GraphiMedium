@@ -80,10 +80,24 @@ locals {
 }
 
 data "archive_file" "lambda_medium_contentful" {
-  type = "zip"
-
+  type        = "zip"
   source_dir  = "${path.module}/../.dist/src"
   output_path = "${path.module}/../.build/src.zip"
+}
+data "archive_file" "lambda_medium_contentful_layer" {
+  type        = "zip"
+  source_dir  = "${path.module}/../.dist/nodejs"
+  output_path = "${path.module}/../.build/nodejs.zip"
+}
+resource "aws_lambda_layer_version" "lambda_medium_contentful_layer" {
+  layer_name = "${local.service_name}-layer"
+  #   filename            = "${path.module}/../../layers/layers.zip"
+  s3_bucket = aws_s3_bucket_object.lambda_medium_contentful_layer.bucket
+  s3_key    = aws_s3_bucket_object.lambda_medium_contentful_layer.key
+  // NEED it?
+  s3_object_version   = aws_s3_bucket_object.lambda_medium_contentful_layer.version_id
+  compatible_runtimes = ["nodejs12.x"]
+  source_code_hash    = filebase64sha256(data.archive_file.lambda_medium_contentful_layer.output_path)
 }
 
 resource "aws_s3_bucket_object" "lambda_medium_contentful" {
@@ -92,6 +106,16 @@ resource "aws_s3_bucket_object" "lambda_medium_contentful" {
   source = data.archive_file.lambda_medium_contentful.output_path
   #   source code changed, the computed etag
   etag = filemd5(data.archive_file.lambda_medium_contentful.output_path)
+}
+
+resource "aws_s3_bucket_object" "lambda_medium_contentful_layer" {
+  bucket = aws_s3_bucket.lambda_layer_bucket.id
+  key    = "${local.service_name}.zip"
+  source = data.archive_file.lambda_medium_contentful_layer.output_path
+  etag   = filemd5(data.archive_file.lambda_medium_contentful_layer.output_path)
+  #   maybe don't need this:
+  depends_on = [
+  "data.archive_file.lambda_medium_contentful_layer"]
 }
 
 
@@ -117,6 +141,8 @@ resource "aws_lambda_function" "lambda_medium_contentful" {
   # which lets Lambda know that there is a new version of your code available.
   source_code_hash = data.archive_file.lambda_medium_contentful.output_base64sha256
   role             = aws_iam_role.lambda_exec.arn
+
+  layers = [aws_lambda_layer_version.lambda_medium_contentful_layer.arn]
 
   # Make sure the role policy is attached before trying to use the role
   depends_on = [aws_iam_role_policy_attachment.lambda_policy]
@@ -150,3 +176,52 @@ resource "aws_iam_role_policy_attachment" "lambda_policy" {
   role       = aws_iam_role.lambda_exec.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
+
+
+# resource "aws_iam_role_policy" "lambda_logging" {
+#   name = "lambda_logging"
+
+#   role = aws_iam_role.lambda_exec_role.id
+
+#   policy = <<EOF
+# {
+#     "Version"  : "2012-10-17",
+#     "Statement": [
+#         {
+#             "Effect"  : "Allow",
+#             "Resource": "*",
+#             "Action"  : [
+#                 "logs:CreateLogStream",
+#                 "logs:PutLogEvents",
+#                 "logs:CreateLogGroup"
+#             ]
+#         }
+#     ]
+# }
+# EOF
+# }
+
+# resource "aws_iam_role_policy" "lambda_s3_access" {
+#   name = "lambda_s3_access"
+
+#   role = aws_iam_role.lambda_exec_role.id
+
+#   # TODO: Change resource to be more restrictive
+#   policy = <<EOF
+# {
+#   "Version"  : "2012-10-17",
+#   "Statement": [
+#     {
+#       "Effect": "Allow",
+#       "Action": [
+#         "s3:ListBuckets",
+#         "s3:PutObject",
+#         "s3:PutObjectAcl",
+#         "s3:GetObjectAcl"
+#       ],
+#       "Resource": ["*"]
+#     }
+#   ]
+# }
+# EOF
+# }
