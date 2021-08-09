@@ -126,7 +126,7 @@ resource "aws_lambda_function" "lambda_medium_contentful" {
 
   runtime = "nodejs12.x"
   handler = "index.handler"
-  #   timeout = 900
+  timeout = 900
   environment {
     variables = {
       #   ACCOUNT_ID  = "${data.aws_caller_identity.current.account_id}",
