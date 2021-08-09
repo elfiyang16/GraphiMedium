@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prebuild": "mkdir -p .dist/nodejs && cp package.json .dist/nodejs/package.json && cp package-lock.json .dist/nodejs/package-lock.json && cd .dist/nodejs && npm ci --production",
+    "prebuild": "mkdir -p .dist/layer/nodejs && cp package.json .dist/layer/nodejs/package.json && cp package-lock.json .dist/layer/nodejs/package-lock.json && cd .dist/layer/nodejs && npm ci --production",
     "build": "tsc"
   },
   "repository": {

@@ -86,8 +86,8 @@ data "archive_file" "lambda_medium_contentful" {
 }
 data "archive_file" "lambda_medium_contentful_layer" {
   type        = "zip"
-  source_dir  = "${path.module}/../.dist/nodejs"
-  output_path = "${path.module}/../.build/nodejs.zip"
+  source_dir  = "${path.module}/../.dist/layer"
+  output_path = "${path.module}/../.build/layer.zip"
 }
 resource "aws_lambda_layer_version" "lambda_medium_contentful_layer" {
   layer_name = "${local.service_name}-layer"
