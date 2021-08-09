@@ -17,7 +17,7 @@ const convertHtmlToMarkdown = (content) => {
 };
 const convertMarkdownToRichtext = async (content) => {
     const document = await rich_text_from_markdown_1.richTextFromMarkdown(content);
-    //   console.log('DOCUMENT', document);
+    console.log('DOCUMENT', document);
     return document;
 };
 const getSlugFromTitle = (title) => {
@@ -69,6 +69,7 @@ const formatImage = async (url) => {
 exports.formatImage = formatImage;
 const transformPost = async (post) => {
     const body = await convertMarkdownToRichtext(convertHtmlToMarkdown(post.description));
+    console.log('IN BETWEEN TRANSFORMPOST', body);
     return {
         title: post.title,
         slug: getSlugFromTitle(post.title),

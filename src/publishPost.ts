@@ -120,6 +120,7 @@ export class ContentfulController {
       tags,
     } = post;
     await this.init();
+    console.log('CREATE ENTRY', title);
 
     const imageAsset = await this.createImageAsset({
       title,
@@ -128,6 +129,7 @@ export class ContentfulController {
     if (!imageAsset) {
       throw Error(`Cannot get image asset for ${title}`);
     }
+    console.log('IMAGE CREATED', imageAsset);
 
     try {
       const entry = await this.environment

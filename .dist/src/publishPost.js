@@ -92,6 +92,7 @@ class ContentfulController {
         this.createBlogEntry = async (post) => {
             const { title, slug, heroImage, description, body, publishDate, tags, } = post;
             await this.init();
+            console.log('CREATE ENTRY', title);
             const imageAsset = await this.createImageAsset({
                 title,
                 link: heroImage,
@@ -99,6 +100,7 @@ class ContentfulController {
             if (!imageAsset) {
                 throw Error(`Cannot get image asset for ${title}`);
             }
+            console.log('IMAGE CREATED', imageAsset);
             try {
                 const entry = await this.environment
                     .createEntry(this.CONTENT_TYPE_ID, {

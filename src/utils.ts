@@ -14,7 +14,7 @@ const convertHtmlToMarkdown = (content: string) => {
 
 const convertMarkdownToRichtext = async (content: string) => {
   const document = await richTextFromMarkdown(content);
-  //   console.log('DOCUMENT', document);
+  console.log('DOCUMENT', document);
   return document;
 };
 
@@ -79,6 +79,7 @@ export const transformPost = async (
   const body = await convertMarkdownToRichtext(
     convertHtmlToMarkdown(post.description)
   );
+  console.log('IN BETWEEN TRANSFORMPOST', body);
   return {
     title: post.title,
     slug: getSlugFromTitle(post.title),
