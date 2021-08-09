@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prebuild": "mkdir -p .dist/nodejs && cp package.json .dist/nodejs/package.json && cp package-lock.json .dist/nodejs/package-lock.json && cd .dist/nodejs && npm ci --production",
+    "prebuild": "mkdir -p .dist/layer/nodejs && cp package.json .dist/layer/nodejs/package.json && cp package-lock.json .dist/layer/nodejs/package-lock.json && cd .dist/layer/nodejs && npm ci --production && npm run prebuild:sharp",
+    "prebuild:sharp": "npm uninstall sharp && npm install --arch=x64 --platform=linux sharp",
     "build": "tsc"
   },
   "repository": {
@@ -27,7 +28,7 @@
     "graphql": "^15.5.1",
     "graphql-tag": "^2.12.5",
     "node-fetch": "^2.6.1",
-    "sharp": "0.28.0",
+    "sharp": "^0.28.3",
     "terraform": "^1.20.1",
     "turndown": "^7.1.1"
   },

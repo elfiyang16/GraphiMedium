@@ -1,42 +1,88 @@
 
-<h3>Generating the World !</h3>
-<h4>— Learn about Python Generator</h4>
-<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*rCBtWiC1cqVUxAsUs26mcg.jpeg"><figcaption>Photo by <a href="https://unsplash.com/@kelvinyup?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Kelvin Yup</a> on <a href="https://unsplash.com/s/photos/cake?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></figcaption></figure><p><em>If you are like me who have a few months experience of Python, then you might be in the same position as me — know something about Python, but not enough. So I spent sometime to gather bits and pieces of scattered knowledge to dig deeper into Python. In this blog, the piece will be generators.</em></p>
-<p>But first, remember about the Iterator we mentioned <a href="https://elfi-y.medium.com/python-iterables-and-iterati-754010885f4">earlier</a>? Generator closely links with the iterator concept:</p>
-<p><strong>generator</strong></p>
-<blockquote>A function which<strong> returns a generator iterator.</strong> It looks like a normal function except that it contains <a href="https://docs.python.org/3/reference/simple_stmts.html#yield"><strong>yield</strong></a> expressions for producing a series of values usable in a for-loop or that can be retrieved one at a time with the next() function.</blockquote>
-<blockquote>Usually refers to a generator function, but may refer to a <em>generator iterator</em> in some contexts. In cases where the intended meaning isn’t clear, using the full terms avoids ambiguity.</blockquote>
-<p><strong>generator iterator</strong></p>
-<blockquote>An object created by a generator function.</blockquote>
-<blockquote>Each yield temporarily<strong> suspends processing, remembering the location execution state</strong>. When the <em>generator iterator</em> resumes, it picks up where it left off (in contrast to functions which start fresh on every invocation).</blockquote>
-<p><strong>generator expression</strong></p>
-<blockquote>An expression that<strong> returns an iterator</strong>. It looks like a normal expression followed by a for clause defining a loop variable, range, and an optional if clause. The combined expression generates values for an enclosing function:</blockquote>
-<p><strong>Generators at a glance</strong></p>
-<p>So first, Generators. Why they are in use? Well, just like the same terminology in JavaScript, Generators are implemented so that we don’t need to write counterintuitive Iterator protocol everytime with __iter__ and __next__ .</p>
-<p>The difference between a Generator and a normal functions are mainly in that:</p>
+<h4>Chapter 6. Partitioning</h4>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*nfd0rwvGcZYjPxYnk0y6eA.jpeg"><figcaption>Photo by <a href="https://unsplash.com/@nate_dumlao?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Nathan Dumlao</a> on <a href="https://unsplash.com/s/photos/dessert?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></figcaption></figure><p><em>This is a series of learning notes on Designing Data-Intensive Applications.</em></p>
+<p>Replication, for very large datasets or very high query throughput is not sufficient, we need to <strong>break the data up into <em>partitions</em> (<em>sharding</em>).</strong></p>
+<p><strong>Scalability</strong> is the main reason for partitioning data. It enables a large dataset to be distributed across many disks, and a query load can be distributed across many processors.</p>
+<p>Copies of each partition are usually stored on multiple nodes. Each record belongs to exactly one partition, it may still be stored on several nodes for fault tolerance. A node may store more than one partition.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/735/0*DZVh9Efvve4c-XOI.png"><figcaption><a href="https://www.educba.com/kafka-replication/">https://www.educba.com/kafka-replication/</a></figcaption></figure><h3>Partition of key-value data</h3>
 <ul>
-<li>It contains one or more yield statements that can remember the state and in pause, will return the control to the outer scope;</li>
-<li>It complies with the iteration protocol naturally so no manual implementation of __iter__() and __next__() is required;</li>
+<li>The goal with partitioning is to <strong>spread the data and the query load evenly across nodes.</strong>
+</li>
+<li>If partition is unfair, it is <strong><em>skewed</em></strong>. It makes partitioning much less effective.</li>
+<li>A partition with disproportionately high load is called<strong> a hot spot.</strong>
+</li>
 </ul>
-<p>Let’s see below how a generator function range_3_gen_func returns a generator iterator:</p>
-<pre>&gt;&gt;&gt; def range_3_gen_func():<br>...     <strong>x = 0</strong><br>...     while x &lt; 3:<br>...       print(f"{x} is yielded")<br>...       <strong>yield</strong> x<br>...       x = x + 1</pre>
-<pre>... result = <strong>range_3_gen_func</strong>()<br>... <strong>next</strong>(result)<br>... next(result)<br>... next(result)<br>... next(result)</pre>
-<pre>==========================<br>0 is yielded<br>1 is yielded<br>2 is yielded<br>Traceback (most recent call last):<br>  File "main.py", line 13, in &lt;module&gt;<br>    next(result)<br>StopIteration</pre>
-<p>You can see from above that the local variable x is remembered throughout the lifetime. Also, note that the generator object can be iterated only once. To start the cycle again we need to invoke range_3_gen_func and assign the returned new generator to another variable.</p>
-<p><strong>Generator expressions</strong></p>
-<p>Sometimes you want to have a more lightweight version of generator just like list comprehension to list. This is where Generator Expression comes in(short form: “listcomps” and “genexps”).</p>
-<p>In short, Generator expressions are like list comprehensions except it creates anonymous generator functions. (The syntax is only different in the () vs. [] )</p>
-<p>Also noted that the list comprehension returns the entire list while the generator expression <strong>return one element at a time</strong>, and more <strong>memory efficient</strong> as a result.</p>
-<pre>&gt;&gt;&gt; line_list = ['  line 1\n', 'line 2\n','line 3\n' ]<br>&gt;&gt;&gt; stripped_iter = (line.strip() for line in line_list)<br>&gt;&gt;&gt; stripped_list = [line.strip() for line in line_list]<br>&gt;&gt;&gt; print(stripped_list)</pre>
-<pre>['line 1', 'line 2', 'line 3']</pre>
-<pre>&gt;&gt;&gt; print(stripped_iter)</pre>
-<pre>&lt;generator object &lt;genexpr&gt; at 0x10c502ed0&gt;</pre>
-<pre>&gt;&gt;&gt; for _ in stripped_iter:<br>...   print(_)<br>...<br>line 1<br>line 2<br>line 3</pre>
-<p>You can see that stripped_iter returns an iterator that computes the values as necessary, not needing to materialise all the values at once, and lazy evaluates the return.</p>
-<p>Just like list comprehension, we can add logic to the genexp:</p>
-<pre>( expression <strong>for</strong> expr <strong>in</strong> sequence1<br><strong>if</strong> condition1<br><strong>for</strong> expr2 <strong>in</strong> sequence2<br><strong>if</strong> condition2<br><strong>for</strong> expr3 <strong>in</strong> sequence3 ...<br><strong>if</strong> condition3<br><strong>for</strong> exprN <strong>in</strong> sequenceN<br><strong>if</strong> conditionN )</pre>
-<p>Also, when used as function argument, the outside parenthesis can be ignored:</p>
-<pre>obj_total = sum(obj.count <strong>for</strong> obj <strong>in</strong> list_all_objects())</pre>
+<p>The simplest approach is to <strong>assign records to nodes randomly,</strong> but this has the downside that it has to read all replicas if accessing a particular item.</p>
+<h4>Partition by key range</h4>
+<ul>
+<li>Assign a<strong> continuous range of keys</strong>.</li>
+<li>This range does not have to be evenly spaced. Once we know the boundaries between the ranges, it’s easy to determine which partition contains a given key. Keys could also be kept in sorted order within each partition.</li>
+<li>The downside of this is that <strong>some access patterns can lead to hotspots.</strong>
+</li>
+<li>The solution for above is to<strong> use a compound key,</strong> e.g. timestamp and item index. Though with this approach, a separate range query for each item name is required.</li>
+</ul>
+<h4>Partitioning by hash of key</h4>
+<ul>
+<li>Many distributed data stores use a hash function to determine the partition for a given key.</li>
+<li>A good hash functio<strong>n takes skewed data and makes it uniformly distributed.</strong> The partition boundaries can be evenly spaced or chosen pseudo-randomly ( <em>consistent hashing)</em>.</li>
+<li>Unfortunately this loses the ability to do efficient range queries. Keys that were once adjacent are now scattered across all the partitions. Any range query has to be sent to all partitions.</li>
+</ul>
+<h4>Skewed workloads and relieving hot spots</h4>
+<ul>
+<li>In an extreme case where reads and writes are for the same key, then all requests being routed to the same partition (e.g. twitter celeb with millions followers).</li>
+<li>A simple technique is to add <strong>a random numbe</strong>r to the beginning or end of the key. This has the downside, though, that reads now have to do additional work to keep track of these keys.</li>
+</ul>
+<h3>Partitioning and secondary indexes</h3>
+<p>The situation gets more complicated if secondary indexes are involved. A secondary index usually doesn’t identify the record uniquely. They don’t map neatly to partitions. Two main approaches to partitioning with secondary indexes are:</p>
+<ul>
+<li><strong>Document-based partitioning</strong></li>
+<li><strong>Term-based partitioning</strong></li>
+</ul>
+<h4>Partitioning secondary indexes by document</h4>
+<p>Each partition maintains its secondary indexes, covering only the documents in that partition <strong>(<em>local index</em></strong>).</p>
+<p>You need to send the query to <em>all</em> partitions, and combine all the results you get back (<em>scatter/gather</em>). This is prone to tail latency amplification and is widely used in MongoDB, Riak, Cassandra, Elasticsearch, SolrCloud and VoltDB.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*WEA_n9VFZkL2f_t0U1jixw.png"></figure><h4>Partitioning secondary indexes by term</h4>
+<p>We keep a<strong> <em>global index</em> that covers data in all partitions. </strong>The global index must also be<strong> partitioned</strong> so it doesn’t become the bottleneck. It is called the <em>term-partitioned</em> because the term we’re looking for determines the partition of the index.</p>
+<p>The advantage of a global index is that reads are more efficient as no need to scatter/gather over all partitions. A client only needs to make a request to the partition containing the document. But the downside is that writes are slower and more complicated, because a write to a single document may now affect multiple partitions of the index.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*UdIQljP7cgVve8UCF7w1xA.png"></figure><h4>Rebalancing partitions</h4>
+<p><strong>The process of moving load from one node in the cluster to another.</strong></p>
+<ul><li>
+<strong>How not to do it: Hash mod n</strong>. The problem with <em>mod N</em> is that if the number of nodes <em>N</em> changes, most of the keys will need to be moved from one node to another, and the operation is very expensive.</li></ul>
+<p><strong>Fixed number of partitions:</strong></p>
+<ul>
+<li>Create many more partitions than there are nodes and assign several partitions to each node.</li>
+<li>When a new node is added , it can <strong><em>steal</em></strong> a few partitions from every existing node until partitions are fairly distributed once again.</li>
+<li>The number of partitions does not change, nor does the assignment of keys to partitions.</li>
+<li>The only thing that change is the assignment of partitions to nodes.</li>
+</ul>
+<p><strong>Dynamic partitioning</strong></p>
+<ul>
+<li>Make the number of partitions adjusts to the total data volume.</li>
+<li>An empty database starts with an empty partition. All the data could end up on one node.</li>
+<li>When a partition grows to exceed a configured size, it is split into two partitions so that approximately half of the data ends up on each side of the split.</li>
+<li>Conversely, if lots of data is deleted and a partition shrinks below some threshold, it can be merged with an adjacent partition.</li>
+</ul>
+<p><strong>Partitioning proportionally to nodes</strong></p>
+<ul>
+<li>Database like Cassandra makes the number of partitions proportional to the number of nodes.</li>
+<li>Have a fixed number of partitions <em>per node</em>. This approach also keeps the size of each partition fairly stable.</li>
+</ul>
+<h4>Operations: automatic or manual rebalancing</h4>
+<ul>
+<li>Fully automated rebalancing can be unpredictable. The process can overload the network or the nodes and harm the performance of other requests while the rebalancing is in progress.</li>
+<li>It can be good to have a human in the loop for rebalancing.</li>
+</ul>
+<h3>Request routing</h3>
+<p>When a client makes a request, how <strong>does it know which node to connect to</strong>? This problem is called <strong><em>service discovery</em>.</strong> There are different approaches:</p>
+<ul>
+<li>Allow<strong> clients to contact any node</strong> and make them handle the request directly, or <strong>forward the request</strong> to the appropriate node.</li>
+<li>Send all requests from clients to<strong> a routing tier</strong> first that acts as a partition-aware load balancer.</li>
+<li>Make<strong> clients aware of the partitioning</strong> and the assignment of partitions to nodes.</li>
+</ul>
+<p>Many distributed data systems rely on a separate coordination service such as <strong>ZooKeeper</strong> to keep track of this cluster metadata. Each node registers itself in ZooKeeper, and ZooKeeper maintains the authoritative mapping of partitions to nodes. The routing tier or the partitioning-aware client, can <strong>subscribe</strong> to this information in ZooKeeper.</p>
+<p>HBase, SolrCloud and Kafka use ZooKeeper to track partition assignment. MongoDB relies on its own <em>config server</em>.</p>
+<p>Cassandra and Riak take a different approach: they use a <em>gossip protocol</em>.</p>
+<blockquote>A <strong>gossip protocol</strong> is a procedure or process of computer peer-to-peer communication that is based on the way epidemics spread. Some distributed systems use peer-to-peer <strong>gossip</strong> to ensure that data is disseminated to all members of a group.</blockquote>
 <p>That’s so much of it!</p>
 <p>Happy Reading!</p>
-<img src="https://medium.com/_/stat?event=post.clientViewed&amp;referrerSource=full_rss&amp;postId=2a44314b6966" width="1" height="1" alt="">
+<img src="https://medium.com/_/stat?event=post.clientViewed&amp;referrerSource=full_rss&amp;postId=f505eec740e7" width="1" height="1" alt="">
