@@ -17,6 +17,7 @@ export class MediumController {
 
   private doInit = async () => {
     try {
+      // caveat: based on assumption that weekly posts number less than 10
       const response = await fetch(this.MEDIUM_URL, {
         method: 'GET',
       });

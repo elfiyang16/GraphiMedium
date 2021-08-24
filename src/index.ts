@@ -10,7 +10,7 @@ const doTheWork = async () => {
     const transformedBlogs = await mediumController.extractPosts();
     const contentfulController = new ContentfulController();
     await contentfulController.createBlogEntry(transformedBlogs[0]);
-    //TODO: resolve rate limit
+    // TODO: resolve rate limit
     // transformedBlogs.map(
     //   async (blog) => await contentfulController.createBlogEntry(blog)
     // );
