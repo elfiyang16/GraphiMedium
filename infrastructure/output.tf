@@ -1,20 +1,9 @@
-# output "lambda_role_name" {
-#   value = aws_iam_role.lambda_role.name
-# }
-
-# output "lambda_role_arn" {
-#   value = aws_iam_role.lambda_role.arn
-# }
-
-# output "aws_iam_policy_lambda_logging_arn" {
-#   value = aws_iam_policy.lambda_logging.arn
-# }
-output "lambda_bucket_name" {
-  description = "Name of the S3 bucket used to store function code."
-  value = aws_s3_bucket.lambda_bucket.id
+output "lambda_getPost_bucket_name" {
+  description = "Name of the getpost S3 bucket used to store function code."
+  value       = module.lambda_getPost.lambda_bucket_name
 }
 
-output "function_name" {
-  description = "Name of the Lambda function."
-  value = aws_lambda_function.lambda_medium_contentful.function_name
+output "lambda_getPost_function_name" {
+  description = "Name of the getPost Lambda function."
+  value       = module.lambda_getPost.function_name
 }

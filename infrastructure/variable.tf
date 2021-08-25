@@ -13,10 +13,11 @@ variable "contentful_space_id" {
   description = "The contentful space id"
 }
 
-# variable "common_tags" {
-#   type        = map(any)
-#   description = "Common tags applied to components"
-# }
+variable "sns_send_post_name" {
+  type        = string
+  description = "The SNS name for sending the posts."
+  default = "Medium-Contentful-Send-Post"
+}
 
 variable "aws_region" {
   description = "AWS region for all resources."
