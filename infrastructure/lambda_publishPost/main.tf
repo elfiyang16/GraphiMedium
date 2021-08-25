@@ -102,5 +102,6 @@ resource "aws_lambda_event_source_mapping" "lambda_publish_post" {
   event_source_arn = aws_sqs_queue.sqs_publish_post.arn
   enabled          = true
   function_name    = aws_lambda_function.lambda_publish_post.arn
-  batch_size       = 1
+  //SQS allows send, receive and delete batching, which helps club up to 10 messages in a single batch while charging price for a single message
+  batch_size       = 1 # if there's no blog that week then no send
 }
