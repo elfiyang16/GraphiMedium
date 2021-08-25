@@ -1,5 +1,5 @@
-import { MediumController } from './getPostNew';
-import { ContentfulController } from './publishPost';
+import { MediumController } from './getPost/getPostNew';
+import { ContentfulController } from './publishPost/publishPost';
 
 const doTheWork = async () => {
   try {

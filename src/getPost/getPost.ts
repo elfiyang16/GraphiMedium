@@ -1,9 +1,9 @@
 import fetch from 'node-fetch';
 const fs = require('fs');
 const path = require('path');
+import { transformPost } from '/opt/nodejs/services/utils';
+import { MediumPost, ContentfulBlogPost } from '/opt/nodejs/interface';
 require('dotenv').config();
-import { transformPost } from './utils';
-import { MediumPost, ContentfulBlogPost } from './interface';
 
 const BASE_URL =
   'https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@';
@@ -17,6 +17,7 @@ export class MediumController {
 
   private doInit = async () => {
     try {
+      // caveat: based on assumption that weekly posts number less than 10
       const response = await fetch(this.MEDIUM_URL, {
         method: 'GET',
       });
@@ -69,18 +70,15 @@ export class MediumController {
 
   public extractPosts = async (): Promise<ContentfulBlogPost[]> => {
     await this.init();
-    // const blogs = await this.getPostsFromLastWeek();
-    // if (blogs.length === 0) {
-    //   // TODO: TERMINATING the service, no blog to transform
-    //   //// process.exit();
-    //   return [];
-    // }
-    // const transformedBlogs = await Promise.all(
-    //   blogs.map(async (blog) => await transformPost(blog))
-    // );
-    const transformedBlogs = (await Promise.all(
-      this.result.items.map(async (blog) => await transformPost(blog))
-    )) as ContentfulBlogPost[];
+    const blogs = await this.getPostsFromLastWeek();
+    if (blogs.length === 0) {
+      // TODO: TERMINATING the service, no blog to transform
+      //// process.exit();
+      return [];
+    }
+    const transformedBlogs = await Promise.all(
+      blogs.map(async (blog) => await transformPost(blog))
+    );
 
     return transformedBlogs;
   };

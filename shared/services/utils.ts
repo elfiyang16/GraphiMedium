@@ -1,4 +1,4 @@
-import { MediumPost, ContentfulBlogPost } from './interface';
+import { MediumPost, ContentfulBlogPost } from '../interface';
 import TurndownService from 'turndown';
 import { richTextFromMarkdown } from '@contentful/rich-text-from-markdown';
 import fetch from 'node-fetch';
@@ -14,7 +14,6 @@ const convertHtmlToMarkdown = (content: string) => {
 
 const convertMarkdownToRichtext = async (content: string) => {
   const document = await richTextFromMarkdown(content);
-  console.log('DOCUMENT', document);
   return document;
 };
 
@@ -79,7 +78,6 @@ export const transformPost = async (
   const body = await convertMarkdownToRichtext(
     convertHtmlToMarkdown(post.description)
   );
-  console.log('IN BETWEEN TRANSFORMPOST', body);
   return {
     title: post.title,
     slug: getSlugFromTitle(post.title),

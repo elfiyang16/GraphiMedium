@@ -1,8 +1,8 @@
 import { createClient } from 'contentful-management';
 import { ClientAPI } from 'contentful-management/dist/typings/create-contentful-api';
 import { Environment } from 'contentful-management/dist/typings/entities/environment';
-import { ContentfulBlogPost } from './interface';
-import { formatImage } from './utils';
+import { ContentfulBlogPost } from '/opt/nodejs/interface';
+import { formatImage } from '/opt/nodejs/services/utils';
 export class ContentfulController {
   accessToken: string;
   client: ClientAPI;

@@ -6,7 +6,7 @@ const sns = new AWS.SNS({ apiVersion: '2010-03-31' });
 const AWS_REGION = 'eu-west-1';
 
 const getPost = async () => {
-  const topicArn = `arn:aws:sns:${AWS_REGION}:${process.env.AWS_ACCOUNT_ID}:${process.env.SNS_MEDIUM_POST_NAME}.fifo`;
+  const topicArn = `arn:aws:sns:${AWS_REGION}:${process.env.AWS_ACCOUNT_ID}:${process.env.SNS_SEND_POST_NAME}.fifo`;
   try {
     const mediumController = new MediumController();
     const transformedBlogs = await mediumController.extractPosts();

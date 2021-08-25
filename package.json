@@ -5,9 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prebuild": "mkdir -p .dist/layer/nodejs && cp package.json .dist/layer/nodejs/package.json && cp package-lock.json .dist/layer/nodejs/package-lock.json && cd .dist/layer/nodejs && npm ci --production && npm run prebuild:sharp",
-    "prebuild:sharp": "npm uninstall sharp && npm install --arch=x64 --platform=linux sharp",
-    "build": "tsc"
+    "postbuild": "npm run postbuild:layer:shared && npm run postbuild:layer:nodemodules && npm run postbuild:sharp",
+    "postbuild:layer:shared": "mkdir -p .dist/shared-layer/nodejs && mv .dist/shared/* .dist/shared-layer/nodejs/ && rm -rf .dist/shared",
+    "postbuild:layer:nodemodules": "mkdir -p .dist/node-modules-layer/nodejs && cp package.json .dist/node-modules-layer/nodejs/package.json && cp package-lock.json .dist/node-modules-layer/nodejs/package-lock.json && cd .dist/node-modules-layer/nodejs && npm ci --production && cd -",
+    "postbuild:sharp": "cd .dist/node-modules-layer/nodejs && npm uninstall sharp && npm install --arch=x64 --platform=linux sharp",
+    "build": "rm -rf .dist && tsc"
   },
   "repository": {
     "type": "git",

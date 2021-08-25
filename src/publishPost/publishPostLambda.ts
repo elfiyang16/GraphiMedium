@@ -1,5 +1,5 @@
 import { ContentfulController } from './publishPost';
-import { ContentfulBlogPost } from './interface';
+import { ContentfulBlogPost } from '/opt/nodejs/interface';
 import { SQSEvent, SQSRecord } from 'aws-lambda';
 
 const parsePostFromRecords = (records: Array<SQSRecord>) =>

@@ -1,7 +1,7 @@
-import { MediumController } from './getPostNew';
+import { MediumController } from './getPost/getPostNew';
 // import { MediumController } from './getPost';
 
-import { ContentfulController } from './publishPost';
+import { ContentfulController } from './publishPost/publishPost';
 // import AWS from 'aws-sdk';
 
 const doTheWork = async () => {

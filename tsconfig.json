@@ -12,6 +12,12 @@
         "outDir": ".dist",
         "preserveConstEnums": true,
         "rootDir": "./",
+        "baseUrl": ".",
+        "paths": {
+            "/opt/nodejs/*": [
+                "shared/*"
+            ]
+        },
         "sourceMap": true,
         "strictNullChecks": true,
         "target": "ES2019",
