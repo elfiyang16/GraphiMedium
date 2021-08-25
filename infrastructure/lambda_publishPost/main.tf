@@ -45,7 +45,7 @@ resource "aws_cloudwatch_log_group" "lambda_publish_post" {
 }
 
 resource "aws_iam_role" "lambda_exec" {
-  name = "serverless_lambda"
+  name = "${local.service_name}-lambda-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -61,7 +61,46 @@ resource "aws_iam_role" "lambda_exec" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_policy" {
+resource "aws_iam_role_policy_attachment" "attach_lambda_role_policy" {
   role       = aws_iam_role.lambda_exec.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  policy_arn = aws_iam_policy.lambda_publish_post.arn
+}
+
+resource "aws_iam_policy" "lambda_publish_post" {
+    name        =  "${local.service_name}-lambda-policy"
+    policy = data.aws_iam_policy_document.lambda_publish_post_policy_document.json
+}
+
+data "aws_iam_policy_document" "lambda_publish_post_policy_document" {
+  statement {
+    sid = ""
+    effect = "Allow"
+    actions = [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"    
+        ]
+    resources = [
+      "*"    
+    ]
+  } 
+  statement {
+    sid = ""
+    effect = "Allow"
+    actions = [
+      "sqs:ReceiveMessage",
+      "sqs:DeleteMessage",
+      "sqs:GetQueueAttributes"
+    ]
+    resources = [
+      aws_sqs_queue.sqs_publish_post.arn
+    ]
+  }
+}
+
+resource "aws_lambda_event_source_mapping" "lambda_publish_post" {
+  event_source_arn = aws_sqs_queue.sqs_publish_post.arn
+  enabled          = true
+  function_name    = aws_lambda_function.lambda_publish_post.arn
+  batch_size       = 1
 }

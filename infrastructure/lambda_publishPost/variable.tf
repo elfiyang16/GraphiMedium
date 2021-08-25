@@ -13,6 +13,11 @@ variable "lambda_node_modules_layer_arn" {
   description = "Arn of the lambda node modules layer."
 }
 
+variable "sns_send_post_topic_name" {
+    type        = string
+    description = "The SNS name for sending the posts."
+}
+
 variable "contentful_space_id" {
   type        = string
   description = "The contentful space id"
