@@ -8,11 +8,15 @@ variable "aws_region" {
     description = "AWS Region for SNS."
 }
 
-variable "sns_send_post_name" {
+variable "sns_send_post_topic_name" {
     type        = string
     description = "The SNS name for sending the posts."
 }
 
+variable "sqs_publish_post_queue_arn" {
+  type    = string
+  description = "The SQS Arn for publish the posts."
+}
 
 variable "medium_username" {
   type        = string

@@ -13,10 +13,16 @@ variable "contentful_space_id" {
   description = "The contentful space id"
 }
 
-variable "sns_send_post_name" {
+variable "sns_send_post_topic_name" {
   type        = string
   description = "The SNS name for sending the posts."
   default = "Medium-Contentful-Send-Post"
+}
+
+variable "sqs_publish_post_queue_name" {
+  type    = string
+  description = "The SQS name for publish the posts."
+  default = "Medium-Contentful-Publish-Post"
 }
 
 variable "aws_region" {

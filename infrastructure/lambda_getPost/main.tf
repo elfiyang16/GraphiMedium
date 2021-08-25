@@ -1,3 +1,28 @@
+# resource "aws_iam_role_policy" "lambda_s3_access" {
+#   name = "lambda_s3_access"
+
+#   role = aws_iam_role.lambda_exec_role.id
+
+#   # TODO: Change resource to be more restrictive
+#   policy = <<EOF
+# {
+#   "Version"  : "2012-10-17",
+#   "Statement": [
+#     {
+#       "Effect": "Allow",
+#       "Action": [
+#         "s3:ListBuckets",
+#         "s3:PutObject",
+#         "s3:PutObjectAcl",
+#         "s3:GetObjectAcl"
+#       ],
+#       "Resource": ["*"]
+#     }
+#   ]
+# }
+# EOF
+# }
+
 
 locals {
   service_name = "get-post"
@@ -29,7 +54,7 @@ resource "aws_lambda_function" "lambda_get_post" {
     variables = {
       AWS_ACCOUNT_ID  = data.aws_caller_identity.current.account_id,
       AWS_REGION = var.aws_region
-      SNS_SEND_POST_NAME = var.sns_send_post_name
+      SNS_SEND_POST_TOPIC_NAME = var.sns_send_post_topic_name
       MEDIUM_USERNAME             = var.medium_username
     }
   }
@@ -39,7 +64,7 @@ resource "aws_lambda_function" "lambda_get_post" {
 
   layers = [var.lambda_node_modules_layer_arn, var.lambda_shared_layer_arn]
   # Make sure the role policy is attached before trying to use the role
-  depends_on = [aws_iam_role_policy_attachment.lambda_policy]
+  depends_on = [aws_iam_role_policy_attachment.attach_lambda_role_policy]
 }
 
 resource "aws_cloudwatch_log_group" "lambda_get_post" {
@@ -48,10 +73,8 @@ resource "aws_cloudwatch_log_group" "lambda_get_post" {
   retention_in_days = 30
 }
 
-# an IAM role that allows Lambda to access resources in your AWS account.
 resource "aws_iam_role" "lambda_exec" {
-  name = "serverless_lambda"
-
+  name = "${local.service_name}-lambda-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -66,56 +89,52 @@ resource "aws_iam_role" "lambda_exec" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_policy" {
+resource "aws_iam_role_policy_attachment" "attach_lambda_role_policy" {
   role       = aws_iam_role.lambda_exec.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  # policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  policy_arn = aws_iam_policy.lambda_get_post_policy.arn
+
+}
+
+resource "aws_iam_policy" "lambda_get_post_policy" {
+  name   = "${local.service_name}-lambda-policy"
+  policy = data.aws_iam_policy_document.lambda_get_post_policy_document.json
 }
 
 
-# resource "aws_iam_role_policy" "lambda_logging" {
-#   name = "lambda_logging"
+data "aws_iam_policy_document" "lambda_get_post_policy_document" {
+  statement {
+    sid = ""
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup"
+    ]
+    resources = [
+      "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:*"
+    ]
+  }
 
-#   role = aws_iam_role.lambda_exec_role.id
+  statement {
+    sid = ""
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = [
+      "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${aws_lambda_function.lambda_get_post.function_name}:*"
+    ]
+  }
 
-#   policy = <<EOF
-# {
-#     "Version"  : "2012-10-17",
-#     "Statement": [
-#         {
-#             "Effect"  : "Allow",
-#             "Resource": "*",
-#             "Action"  : [
-#                 "logs:CreateLogStream",
-#                 "logs:PutLogEvents",
-#                 "logs:CreateLogGroup"
-#             ]
-#         }
-#     ]
-# }
-# EOF
-# }
+  statement {
+    sid = ""
+    effect = "Allow"
+    actions = [
+      "SNS:Publish"
+    ]
+    resources = [
+      aws_sns_topic.sns_send_post.arn
+    ]
+  }
+}
 
-# resource "aws_iam_role_policy" "lambda_s3_access" {
-#   name = "lambda_s3_access"
-
-#   role = aws_iam_role.lambda_exec_role.id
-
-#   # TODO: Change resource to be more restrictive
-#   policy = <<EOF
-# {
-#   "Version"  : "2012-10-17",
-#   "Statement": [
-#     {
-#       "Effect": "Allow",
-#       "Action": [
-#         "s3:ListBuckets",
-#         "s3:PutObject",
-#         "s3:PutObjectAcl",
-#         "s3:GetObjectAcl"
-#       ],
-#       "Resource": ["*"]
-#     }
-#   ]
-# }
-# EOF
-# }
