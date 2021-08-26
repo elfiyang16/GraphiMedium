@@ -52,7 +52,7 @@ resource "aws_lambda_function" "lambda_get_post" {
   timeout = 900
   environment {
     variables = {
-      AWS_ACCOUNT_ID           = data.aws_caller_identity.current.account_id,
+      AWS_ACCOUNT_ID           = var.aws_account_id
       AWS_REGION               = var.aws_region
       SNS_SEND_POST_TOPIC_NAME = var.sns_send_post_topic_name
       MEDIUM_USERNAME          = var.medium_username
