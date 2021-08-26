@@ -8,6 +8,11 @@ variable "aws_region" {
   description = "AWS Region for SNS."
 }
 
+variable "aws_account_id" {
+  type        = string
+  description = "The aws account id"
+}
+
 variable "sns_send_post_topic_name" {
   type        = string
   description = "The SNS name for sending the posts."
