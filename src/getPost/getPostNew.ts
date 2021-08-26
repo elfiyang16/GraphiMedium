@@ -81,6 +81,7 @@ export class MediumController {
     const transformedBlogs = (await Promise.all(
       this.result.items.map(async (blog) => await transformPost(blog))
     )) as ContentfulBlogPost[];
+    console.log('CALLED here', transformedBlogs);
 
     return transformedBlogs;
   };
