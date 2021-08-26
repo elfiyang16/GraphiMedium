@@ -22,9 +22,10 @@ resource "aws_lambda_function" "lambda_publish_post" {
   s3_bucket     = var.lambda_publish_post_bucket
   s3_key        = aws_s3_bucket_object.lambda_publish_post.key
 
-  runtime = "nodejs12.x"
-  handler = "publishPostLambda.handler"
-  timeout = 450
+  runtime     = "nodejs12.x"
+  handler     = "publishPostLambda.handler"
+  timeout     = 450
+  memory_size = 512
   environment {
     variables = {
       CONTENTFUL_MANAGEMENT_TOKEN = var.contenful_management_token

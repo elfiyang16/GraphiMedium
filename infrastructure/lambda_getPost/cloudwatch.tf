@@ -3,7 +3,7 @@ resource "aws_cloudwatch_event_rule" "every_week" {
   description = "Fires every week"
   #   weekly Sunday at 9:30 
   #   schedule_expression = "cron(30 9 * * 0)"
-  schedule_expression = "cron(44 19 ? * THU *)"
+  schedule_expression = "cron(05 20 ? * THU *)"
 }
 
 resource "aws_cloudwatch_event_target" "lambda_get_post" {
