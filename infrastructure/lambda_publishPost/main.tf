@@ -5,8 +5,8 @@ locals {
 
 data "archive_file" "lambda_publish_post" {
   type        = "zip"
-  source_dir  = "${path.module}/../.dist/src/publishPost"
-  output_path = "${path.module}/../.build/src/publishPost.zip"
+  source_dir  = "${path.module}/../../.dist/src/publishPost"
+  output_path = "${path.module}/../../.build/src/publishPost.zip"
 }
 
 resource "aws_s3_bucket_object" "lambda_publish_post" {

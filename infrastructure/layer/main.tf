@@ -3,8 +3,8 @@
 
 data "archive_file" "lambda_node_modules_layer" {
   type        = "zip"
-  source_dir  = "${path.module}/../.dist/node-modules-layer"
-  output_path = "${path.module}/../.build/node-modules-layer.zip"
+  source_dir  = "${path.module}/../../.dist/node-modules-layer"
+  output_path = "${path.module}/../../.build/node-modules-layer.zip"
 }
 
 
@@ -21,7 +21,7 @@ resource "aws_lambda_layer_version" "lambda_node_modules_layer" {
 
 resource "aws_s3_bucket_object" "lambda_node_modules_layer" {
   bucket = var.lambda_node_modules_layer_bucket
-#   bucket = aws_s3_bucket.lambda_layer_bucket.id
+  #   bucket = aws_s3_bucket.lambda_layer_bucket.id
   key    = "node_modules.zip"
   source = data.archive_file.lambda_node_modules_layer.output_path
   etag   = filemd5(data.archive_file.lambda_node_modules_layer.output_path)
@@ -34,8 +34,8 @@ resource "aws_s3_bucket_object" "lambda_node_modules_layer" {
 
 data "archive_file" "lambda_shared_layer" {
   type        = "zip"
-  source_dir  = "${path.module}/../.dist/shared-layer"
-  output_path = "${path.module}/../.build/shared-layer.zip"
+  source_dir  = "${path.module}/../../.dist/shared-layer"
+  output_path = "${path.module}/../../.build/shared-layer.zip"
 }
 
 resource "aws_lambda_layer_version" "lambda_shared_layer" {

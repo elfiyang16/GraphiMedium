@@ -30,8 +30,8 @@ locals {
 
 data "archive_file" "lambda_get_post" {
   type        = "zip"
-  source_dir  = "${path.module}/../.dist/src/getPost"
-  output_path = "${path.module}/../.build/src/getPost.zip"
+  source_dir  = "${path.module}/../../.dist/src/getPost"
+  output_path = "${path.module}/../../.build/src/getPost.zip"
 }
 
 resource "aws_s3_bucket_object" "lambda_get_post" {
