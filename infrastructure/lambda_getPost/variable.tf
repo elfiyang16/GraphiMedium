@@ -3,11 +3,6 @@ variable "lambda_get_post_bucket" {
   description = "The bucket name for get post lambda."
 }
 
-variable "aws_region" {
-  type        = string
-  description = "AWS Region for SNS."
-}
-
 variable "aws_account_id" {
   type        = string
   description = "The aws account id"

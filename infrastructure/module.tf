@@ -1,7 +1,6 @@
 module "lambda_getPost" {
   source                   = "./lambda_getPost"
   lambda_get_post_bucket   = aws_s3_bucket.lambda_get_post_bucket.id
-  aws_region               = var.aws_region
   sns_send_post_topic_name = var.sns_send_post_topic_name
   medium_username          = var.medium_username
   aws_account_id           = data.aws_caller_identity.current.account_id
