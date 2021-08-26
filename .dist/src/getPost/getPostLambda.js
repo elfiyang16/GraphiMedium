@@ -16,7 +16,11 @@ const getPost = async () => {
   try {
     const mediumController = new getPostNew_1.MediumController();
     const transformedBlogs = await mediumController.extractPosts();
+    console.log('TransformBlogs', transformedBlogs);
+
     transformedBlogs.map(async (blog) => {
+      console.log('RUN?');
+
       const result = await sns
         .publish({
           Message: JSON.stringify({
@@ -27,8 +31,10 @@ const getPost = async () => {
           // MessageDeduplicationId: 'abc123',
         })
         .promise();
-      console.log('SNS RESULT\n', result);
+
+      console.log('SNS RESULT\n', topicArn, result);
     });
+    console.log('RUN AFTER');
   } catch (error) {
     console.error(error);
     return error;
