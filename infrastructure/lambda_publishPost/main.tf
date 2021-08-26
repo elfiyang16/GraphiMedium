@@ -24,7 +24,7 @@ resource "aws_lambda_function" "lambda_publish_post" {
 
   runtime = "nodejs12.x"
   handler = "publishPostLambda.handler"
-  timeout = 900
+  timeout = 450
   environment {
     variables = {
       CONTENTFUL_MANAGEMENT_TOKEN = var.contenful_management_token

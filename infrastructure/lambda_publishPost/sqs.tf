@@ -11,7 +11,9 @@ resource "aws_sqs_queue" "sqs_publish_post" {
   #  long polling
   receive_wait_time_seconds = 10
   # Depending on how long it takes to process a message, extend the message’s visibility timeout to the max time it takes to process and delete the message.
-  visibility_timeout_seconds = 50
+  # https://github.com/aws/serverless-application-model/issues/1424
+  # heartbeat: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html
+  visibility_timeout_seconds = 800 #default 30
   #   High-throughput FIFO queue:
   # fifo_throughput_limit = "perMessageGroupId"
   policy = data.aws_iam_policy_document.sqs_publish_post.json
