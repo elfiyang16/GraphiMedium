@@ -38,4 +38,10 @@ variable "aws_region" {
   description = "The aws region"
 }
 
+variable "sqs_publish_post_queue_name" {
+  type        = string
+  description = "The SQS name for publish the posts."
+  default     = "Medium-Contentful-Publish-Post"
+}
+
 
