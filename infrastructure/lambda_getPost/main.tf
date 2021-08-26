@@ -38,13 +38,13 @@ resource "aws_s3_bucket_object" "lambda_get_post" {
   bucket = var.lambda_get_post_bucket
   key    = "${local.service_name}.zip"
   source = data.archive_file.lambda_get_post.output_path
-  etag = filemd5(data.archive_file.lambda_get_post.output_path)
+  etag   = filemd5(data.archive_file.lambda_get_post.output_path)
 }
 
 
 resource "aws_lambda_function" "lambda_get_post" {
   function_name = local.service_name
-  s3_bucket = var.lambda_get_post_bucket
+  s3_bucket     = var.lambda_get_post_bucket
   s3_key        = aws_s3_bucket_object.lambda_get_post.key
 
   runtime = "nodejs12.x"
@@ -52,10 +52,10 @@ resource "aws_lambda_function" "lambda_get_post" {
   timeout = 900
   environment {
     variables = {
-      AWS_ACCOUNT_ID  = data.aws_caller_identity.current.account_id,
-      AWS_REGION = var.aws_region
+      AWS_ACCOUNT_ID           = data.aws_caller_identity.current.account_id,
+      AWS_REGION               = var.aws_region
       SNS_SEND_POST_TOPIC_NAME = var.sns_send_post_topic_name
-      MEDIUM_USERNAME             = var.medium_username
+      MEDIUM_USERNAME          = var.medium_username
     }
   }
 
@@ -90,7 +90,7 @@ resource "aws_iam_role" "lambda_exec" {
 }
 
 resource "aws_iam_role_policy_attachment" "attach_lambda_role_policy" {
-  role       = aws_iam_role.lambda_exec.name
+  role = aws_iam_role.lambda_exec.name
   # policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
   policy_arn = aws_iam_policy.lambda_get_post_policy.arn
 
@@ -104,30 +104,45 @@ resource "aws_iam_policy" "lambda_get_post_policy" {
 
 data "aws_iam_policy_document" "lambda_get_post_policy_document" {
   statement {
-    sid = ""
+    sid    = ""
     effect = "Allow"
     actions = [
-      "logs:CreateLogGroup"
-    ]
-    resources = [
-      "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:*"
-    ]
-  }
-
-  statement {
-    sid = ""
-    effect = "Allow"
-    actions = [
+      "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents"
     ]
     resources = [
-      "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${aws_lambda_function.lambda_get_post.function_name}:*"
+      "*"
     ]
   }
+  # Temporarily comment out to avoid cycle with line:
+  # # depends_on = [aws_iam_role_policy_attachment.attach_lambda_role_policy]
+
+  # statement {
+  #   sid = ""
+  #   effect = "Allow"
+  #   actions = [
+  #     "logs:CreateLogGroup"
+  #   ]
+  #   resources = [
+  #     "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:*"
+  #   ]
+  # }
+
+  # statement {
+  #   sid = ""
+  #   effect = "Allow"
+  #   actions = [
+  #     "logs:CreateLogStream",
+  #     "logs:PutLogEvents"
+  #   ]
+  #   resources = [
+  #     "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${aws_lambda_function.lambda_get_post.function_name}:*"
+  #   ]
+  # }
 
   statement {
-    sid = ""
+    sid    = ""
     effect = "Allow"
     actions = [
       "SNS:Publish"
