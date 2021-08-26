@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
-const getPostNew_1 = require("./getPostNew");
+const getPostNew_1 = require("./getPost/getPostNew");
 // import { MediumController } from './getPost';
-const publishPost_1 = require("./publishPost");
+const publishPost_1 = require("./publishPost/publishPost");
 // import AWS from 'aws-sdk';
 const doTheWork = async () => {
     try {
@@ -11,7 +11,7 @@ const doTheWork = async () => {
         const transformedBlogs = await mediumController.extractPosts();
         const contentfulController = new publishPost_1.ContentfulController();
         await contentfulController.createBlogEntry(transformedBlogs[0]);
-        //TODO: resolve rate limit
+        // TODO: resolve rate limit
         // transformedBlogs.map(
         //   async (blog) => await contentfulController.createBlogEntry(blog)
         // );

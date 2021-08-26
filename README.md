@@ -7,3 +7,13 @@ TODO
 - elastic search
 - SMS
 - refactor on tf modules
+
+#### Note
+
+Files for temporary usage
+
+```
+indexee.ts
+getPostNew.ts
+
+```

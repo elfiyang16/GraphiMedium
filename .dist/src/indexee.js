@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const getPostNew_1 = require("./getPostNew");
-const publishPost_1 = require("./publishPost");
+const getPostNew_1 = require("./getPost/getPostNew");
+const publishPost_1 = require("./publishPost/publishPost");
 const doTheWork = async () => {
     try {
         const mediumController = new getPostNew_1.MediumController();
