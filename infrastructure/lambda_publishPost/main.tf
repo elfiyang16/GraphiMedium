@@ -13,13 +13,13 @@ resource "aws_s3_bucket_object" "lambda_publish_post" {
   bucket = var.lambda_publish_post_bucket
   key    = "${local.service_name}.zip"
   source = data.archive_file.lambda_publish_post.output_path
-  etag = filemd5(data.archive_file.lambda_publish_post.output_path)
+  etag   = filemd5(data.archive_file.lambda_publish_post.output_path)
 }
 
 
 resource "aws_lambda_function" "lambda_publish_post" {
   function_name = local.service_name
-  s3_bucket = var.lambda_publish_post_bucket
+  s3_bucket     = var.lambda_publish_post_bucket
   s3_key        = aws_s3_bucket_object.lambda_publish_post.key
 
   runtime = "nodejs12.x"
@@ -35,8 +35,8 @@ resource "aws_lambda_function" "lambda_publish_post" {
   source_code_hash = data.archive_file.lambda_publish_post.output_base64sha256
   role             = aws_iam_role.lambda_exec.arn
 
-  layers = [var.lambda_node_modules_layer_arn, var.lambda_shared_layer_arn]
-  depends_on = [aws_iam_role_policy_attachment.lambda_policy]
+  layers     = [var.lambda_node_modules_layer_arn, var.lambda_shared_layer_arn]
+  depends_on = [aws_iam_role_policy_attachment.attach_lambda_role_policy]
 }
 
 resource "aws_cloudwatch_log_group" "lambda_publish_post" {
@@ -67,25 +67,25 @@ resource "aws_iam_role_policy_attachment" "attach_lambda_role_policy" {
 }
 
 resource "aws_iam_policy" "lambda_publish_post" {
-    name        =  "${local.service_name}-lambda-policy"
-    policy = data.aws_iam_policy_document.lambda_publish_post_policy_document.json
+  name   = "${local.service_name}-lambda-policy"
+  policy = data.aws_iam_policy_document.lambda_publish_post_policy_document.json
 }
 
 data "aws_iam_policy_document" "lambda_publish_post_policy_document" {
   statement {
-    sid = ""
+    sid    = ""
     effect = "Allow"
     actions = [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"    
-        ]
-    resources = [
-      "*"    
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
     ]
-  } 
+    resources = [
+      "*"
+    ]
+  }
   statement {
-    sid = ""
+    sid    = ""
     effect = "Allow"
     actions = [
       "sqs:ReceiveMessage",
@@ -103,5 +103,5 @@ resource "aws_lambda_event_source_mapping" "lambda_publish_post" {
   enabled          = true
   function_name    = aws_lambda_function.lambda_publish_post.arn
   //SQS allows send, receive and delete batching, which helps club up to 10 messages in a single batch while charging price for a single message
-  batch_size       = 1 # if there's no blog that week then no send
+  batch_size = 1 # if there's no blog that week then no send
 }

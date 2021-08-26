@@ -1,20 +1,20 @@
 variable "lambda_get_post_bucket" {
-    type        = string
-    description = "The bucket name for get post lambda."
+  type        = string
+  description = "The bucket name for get post lambda."
 }
 
 variable "aws_region" {
-    type        = string
-    description = "AWS Region for SNS."
+  type        = string
+  description = "AWS Region for SNS."
 }
 
 variable "sns_send_post_topic_name" {
-    type        = string
-    description = "The SNS name for sending the posts."
+  type        = string
+  description = "The SNS name for sending the posts."
 }
 
 variable "sqs_publish_post_queue_arn" {
-  type    = string
+  type        = string
   description = "The SQS Arn for publish the posts."
 }
 

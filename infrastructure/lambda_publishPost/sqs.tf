@@ -1,24 +1,24 @@
 resource "aws_sqs_queue" "sqs_publish_post" {
-  name   = "${var.sqs_publish_post_queue_name}.fifo"
+  name                        = "${var.sqs_publish_post_queue_name}.fifo"
   fifo_queue                  = true
   content_based_deduplication = true
-  max_message_size          = 2048 #256 KB
-  message_retention_seconds=691200 #retains 8 days
-#   https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue#message_retention_seconds
-#   redrive_policy = 5
-#   redrive_policy            = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.terraform_queue_deadletter.arn}\",\"maxReceiveCount\":4}"
-    # redrive_policy  = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.results_updates_dl_queue.arn}\",\"maxReceiveCount\":5}"
-#  long polling
+  max_message_size            = 2048   #256 KB
+  message_retention_seconds   = 691200 #retains 8 days
+  #   https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue#message_retention_seconds
+  #   redrive_policy = 5
+  #   redrive_policy            = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.terraform_queue_deadletter.arn}\",\"maxReceiveCount\":4}"
+  # redrive_policy  = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.results_updates_dl_queue.arn}\",\"maxReceiveCount\":5}"
+  #  long polling
   receive_wait_time_seconds = 10
-# Depending on how long it takes to process a message, extend the message’s visibility timeout to the max time it takes to process and delete the message.
+  # Depending on how long it takes to process a message, extend the message’s visibility timeout to the max time it takes to process and delete the message.
   visibility_timeout_seconds = 50
-#   High-throughput FIFO queue:
-# fifo_throughput_limit = "perMessageGroupId"
+  #   High-throughput FIFO queue:
+  # fifo_throughput_limit = "perMessageGroupId"
   policy = data.aws_iam_policy_document.sqs_publish_post.json
 }
 
 data "aws_iam_policy_document" "sqs_publish_post" {
-  policy_id = "arn:aws:sqs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${var.sqs_publish_post_queue_name}/SQSDefaultPolicy"
+  policy_id = "arn:aws:sqs:${var.aws_region}:${var.aws_account_id}:${var.sqs_publish_post_queue_name}/SQSDefaultPolicy"
 
   statement {
     sid    = "sns-to-sqs"
@@ -31,13 +31,13 @@ data "aws_iam_policy_document" "sqs_publish_post" {
       "SQS:SendMessage",
     ]
     resources = [
-      "arn:aws:sqs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${var.sqs_publish_post_queue_name}.fifo"
+      "arn:aws:sqs:${var.aws_region}:${var.aws_account_id}:${var.sqs_publish_post_queue_name}.fifo"
     ]
     condition {
       test     = "ArnEquals"
       variable = "aws:SourceArn"
-      values   = [
-        "arn:aws:sns:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${var.sns_send_post_topic_name}.fifo"
+      values = [
+        "arn:aws:sns:${var.aws_region}:${var.aws_account_id}:${var.sns_send_post_topic_name}.fifo"
       ]
     }
   }
