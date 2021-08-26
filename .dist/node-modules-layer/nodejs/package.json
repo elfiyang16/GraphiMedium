@@ -1,0 +1,45 @@
+{
+  "name": "request-medium-sdk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postbuild": "npm run postbuild:layer:shared && npm run postbuild:layer:nodemodules && npm run postbuild:sharp",
+    "postbuild:layer:shared": "mkdir -p .dist/shared-layer/nodejs && mv .dist/shared/* .dist/shared-layer/nodejs/ && rm -rf .dist/shared",
+    "postbuild:layer:nodemodules": "mkdir -p .dist/node-modules-layer/nodejs && cp package.json .dist/node-modules-layer/nodejs/package.json && cp package-lock.json .dist/node-modules-layer/nodejs/package-lock.json && cd .dist/node-modules-layer/nodejs && npm ci --production && cd -",
+    "postbuild:sharp": "cd .dist/node-modules-layer/nodejs && npm uninstall sharp && npm install --arch=x64 --platform=linux sharp",
+    "build": "rm -rf .dist && tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elfiyang16/medium-request-sdk.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elfiyang16/medium-request-sdk/issues"
+  },
+  "homepage": "https://github.com/elfiyang16/medium-request-sdk#readme",
+  "dependencies": {
+    "@contentful/rich-text-from-markdown": "^15.1.0",
+    "@types/sharp": "^0.28.5",
+    "aws-sdk": "^2.963.0",
+    "contentful-management": "^7.31.0",
+    "dotenv": "^10.0.0",
+    "graphql": "^15.5.1",
+    "graphql-tag": "^2.12.5",
+    "node-fetch": "^2.6.1",
+    "sharp": "^0.29.0",
+    "terraform": "^1.20.1",
+    "turndown": "^7.1.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.76",
+    "@types/node": "^16.4.12",
+    "eslint": "^7.16.0",
+    "prettier": "2.2.1",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.5"
+  }
+}

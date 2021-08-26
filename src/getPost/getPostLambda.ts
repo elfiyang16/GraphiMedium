@@ -10,7 +10,7 @@ const getPost = async () => {
   try {
     const mediumController = new MediumController();
     const transformedBlogs = await mediumController.extractPosts();
-
+    console.log('TransformBlogs', transformedBlogs);
     transformedBlogs.map(async (blog) => {
       const result = await sns
         .publish({

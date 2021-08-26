@@ -12,6 +12,7 @@ const publishPost = async (event: SQSEvent) => {
   console.log(JSON.stringify(event, null, 2));
 
   const transformedBlogs = parsePostFromRecords(event.Records);
+  console.log('TransformedBlogs to Publish\n', transformedBlogs);
 
   try {
     const contentfulController = new ContentfulController();
