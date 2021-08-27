@@ -10,20 +10,22 @@ const getPost = async () => {
   try {
     const mediumController = new MediumController();
     const transformedBlogs = await mediumController.extractPosts();
-    console.log('TransformBlogs', transformedBlogs);
-    transformedBlogs.map(async (blog) => {
-      const result = await sns
-        .publish({
-          Message: JSON.stringify({
-            blog,
-          }),
-          TopicArn: topicArn,
-          MessageGroupId: 'medium-post',
-          // MessageDeduplicationId: 'abc123',
-        })
-        .promise();
-      console.log('SNS RESULT\n', result);
-    });
+
+    return await Promise.all(
+      transformedBlogs.map(
+        async (blog) =>
+          await sns
+            .publish({
+              Message: JSON.stringify({
+                blog,
+              }),
+              TopicArn: topicArn,
+              // MessageDeduplicationId: 'abc123',
+              MessageGroupId: 'medium-post',
+            })
+            .promise()
+      )
+    );
   } catch (error) {
     console.error(error);
     return error;
