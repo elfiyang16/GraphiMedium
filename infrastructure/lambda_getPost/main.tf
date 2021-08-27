@@ -50,7 +50,7 @@ resource "aws_lambda_function" "lambda_get_post" {
   runtime = "nodejs12.x"
   handler = "getPostLambda.handler"
   timeout = 900
-  memory_size = 512
+  memory_size = 256
   environment {
     variables = {
       AWS_ACCOUNT_ID           = var.aws_account_id

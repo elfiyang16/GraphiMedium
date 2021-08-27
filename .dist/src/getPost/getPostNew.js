@@ -70,7 +70,6 @@ class MediumController {
             //   blogs.map(async (blog) => await transformPost(blog))
             // );
             const transformedBlogs = (await Promise.all(this.result.items.map(async (blog) => await utils_1.transformPost(blog))));
-            console.log('CALLED here', transformedBlogs);
             return transformedBlogs;
         };
     }
