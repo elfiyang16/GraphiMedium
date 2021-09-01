@@ -88,3 +88,6 @@ export const transformPost = async (
     tags: post.categories,
   };
 };
+
+export const pipe = (...functions) => (x) =>
+  functions.reduce((acc, fn) => fn(acc), x);
