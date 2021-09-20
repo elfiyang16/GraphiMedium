@@ -9,11 +9,11 @@ resource "aws_sqs_queue" "sqs_publish_post" {
   #   redrive_policy            = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.terraform_queue_deadletter.arn}\",\"maxReceiveCount\":4}"
   # redrive_policy  = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.results_updates_dl_queue.arn}\",\"maxReceiveCount\":5}"
   #  long polling
-  receive_wait_time_seconds = 10
+  receive_wait_time_seconds = 20
   # Depending on how long it takes to process a message, extend the message’s visibility timeout to the max time it takes to process and delete the message.
   # https://github.com/aws/serverless-application-model/issues/1424
   # heartbeat: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html
-  visibility_timeout_seconds = 800 #default 30
+  visibility_timeout_seconds = 800 #default 30 but lambda may need longer to proceed the msg
   #   High-throughput FIFO queue:
   # fifo_throughput_limit = "perMessageGroupId"
   policy = data.aws_iam_policy_document.sqs_publish_post.json
